@@ -1,0 +1,23 @@
+---
+title: A propos de moi
+author: ''
+date: '2019-12-08'
+slug: biographie
+categories: []
+tags: []
+type: "page"
+---
+
+Je m'appelle Thomas Vroylandt.
+
+Après une prépa BL à Dijon et un master en sciences sociales à l'EHESS, l'ENS et l'ENSAE, j'ai eu l'occasion de développer mes compétences quantitatives dans mes emplois successifs.
+
+J'ai d'abord pu travailler au sein de la Drees, direction statistique du ministère des Affaires sociales. J'y étais en charge d'une enquête sur la formation des travailleurs sociaux ainsi que d'analyses sur le champ de l'emploi et de la formation dans le secteur de l'action sociale et médico-sociale.
+
+Je travaille actuellement au sein de la direction statistique de Pôle emploi. Je m'y occupe des sujets en rapport avec le côté offre sur le marché du travail - difficultés de recrutement, tensions, compétences, etc. Ce poste me permet de toucher à une vaste séries de données, qu'il s'agisse de données d'enquêtes ou de sources administratives. J'ai ainsi pu me forger une solide expérience sur le champ de l'analyse de l'emploi et du marché du travail.
+
+Par ailleurs, je suis un grand utilisateur du logiciel R, qui je le crois, permet de travailler d'une autre façon avec les données, à la fois de façon plus ouverte, plus reproductible et avec des possibilités encore plus tournées vers les destinataires finaux de nos analyses.
+
+Du point de vue personnel, j'ai fait beaucoup de scoutisme (chez les Scouts et Guides de France) et je continue encore à aider un peu, sur l'analyse des données notamment. Je fais aussi du badminton, chez moi à Chantilly.
+
+Mon CV complet est disponible ici : [curriculum vitae](../pdf/cv_vroylandt.pdf)

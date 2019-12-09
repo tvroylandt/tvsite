@@ -89,10 +89,10 @@ a:hover {
 }
 
 h1,h2,h3,h4,h5,h6 {
-    font-family: raleway,sans-serif;
+    font-family: montserrat,sans-serif;
     line-height: 1.2;
     color: #333;
-    font-weight: 200;
+    font-weight: 300;
 }
 
 h1 {
@@ -219,7 +219,7 @@ ul {
 
 .header nav {
     margin-top: 20px;
-    border-top: 1px solid #f4f4f4;
+    border-top: 12px solid #a00;
 }
 
 .header nav ul,

@@ -1,10 +1,10 @@
 baseURL = "http://example.org/"
-languageCode = "en-us"
+languageCode = "fr-fr"
 title = "Thomas Vroylandt"
 theme = "ezhil"
-paginate = 5
+paginate = 10
 
-copyright = "© Copyright notice"
+copyright = ""
 
 pygmentsstyle = "solarized-dark"
 pygmentscodefences = true
@@ -14,38 +14,27 @@ googleAnalytics = "UA-123-45"
 disqusShortname = "ezhil-demo"
 
 [params]
-	subtitle = "Un peu d'analyses de données et de R"
+	subtitle = "Un peu d'analyses et de données"
 	disableDisqusTypes = ["page"]
 	featherIconsCDN = true
 	mode = "auto" # "dark", "auto", "light"
 	# customCSS = "css/custom.css"  # Custom CSS applied to default styles.
-	# customDarkCSS = "css/custom-dark.css"  # Custom styles applied to dark mode css.
 	# customJS = ["js/custom.js", "js/custom1.js"]  # Custom JS scripts.
 
 [[menu.main]]
-name = "Home"
+name = "Menu"
 url = "/"
 weight = 1
 
 [[menu.main]]
-name = "Bio"
-url = "/bio"
+name = "Biographie"
+url = "/biographie"
 weight = 2
 
 [[menu.main]]
-name = "Projets"
-url = "/projets"
+name = "Publications"
+url = "/publi"
 weight = 3
-
-[[menu.main]]
-name = "Freelance"
-url = "/freelance"
-weight = 4
-
-[[menu.main]]
-name = "Blog"
-url = "/posts"
-weight = 5
 
 [[params.social]]
 name = "Twitter"
