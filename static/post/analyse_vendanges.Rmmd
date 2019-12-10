@@ -67,11 +67,9 @@ moy_10ans <- moy_empl %>%
   select(filtre_poste, part_empl, part_jour)
 ```
 
-Tisser un peu le récit (référence littéraire ? style journalistique ?)
+Les vendanges sont une période l'année où l'emploi saisonnier bondit. De nombreuses personnes sont alors recrutées spécialement pour l'occasion, pour des durées souvent courtes. La Dares a d'ailleurs récemment analysé ces durées de travail, qui sont différentes selon les vignobles, à partir de la Déclaration Sociale Nominative (DSN) : https://dares.travail-emploi.gouv.fr/dares-etudes-et-statistiques/etudes-et-syntheses/autres-publications/article/emplois-saisonniers-le-cas-des-vendanges.
 
-Intro sur qui compose la PCS au niveau métier, combien d'emploi (postes) cela représente + renvoi à la note méthodologique de fin.
-
-691D : Ouvriers de la viticulture ou de l'arboriculture fruitière
+On va s'appliquer ici à mettre en avant quelques caractéristiques de cet emploi lié aux vendanges, à partir des DADS de l'Insee (voir encadré). Le focus est fait sur le métier des ouvriers de la viticulture ou de l'arboriculture fruitière (PCS 691D). La catégorie d'analyse n'est donc pas pure, bien qu'elle soit majoritairement composée de vendangeurs.
 
 ## Emplois permanents et saisonniers
 
@@ -80,7 +78,7 @@ Au sein de la profession des ouvriers viticoles et arboriculteurs, deux modalit�
 + d'un côté des emplois permanents (ou poste non-annexe), à l'année ou sur des périodes longues. En moyenne, sur 10 ans, ils représentent `r filter(moy_10ans, filtre_poste == "Non annexe")$part_empl` % des emplois et `r filter(moy_10ans, filtre_poste == "Non annexe")$part_jour` % des jours travaillés ;
 + de l'autre côté des emplois saisonniers (ou poste annexe), sur de courtes périodes, pour les récoltes. De façon, inverse, ils représentent la majorité des emplois, `r filter(moy_10ans, filtre_poste == "Annexe")$part_empl` %, mais seulement `r filter(moy_10ans, filtre_poste == "Annexe")$part_jour` % des jours travaillés.
 
-## Analyse de la saisonnalité
+## La saisonnalité de l'emploi
 
 De façon assez logique, ces emplois ne se répartissent pas de la même façon au cours de l'année. Les emplois permanents sont de faits relativement stables selon les périodes, bien qu'on observe un pic au moment des récoltes. Les emplois saisonniers se multiplient au moment des périodes de récolte et notamment pendant les vendanges.
 
@@ -94,15 +92,6 @@ seq_empl_jour %>%
   ggplot() +
   geom_area(aes(x = jour / 30, y = part_n * 100, fill = filtre_poste),
             stat = "identity", color = "grey40", size = 1.1) +
-  geom_label(
-    data = tibble(x = 4.5, y = 0.4, label = "La période des vendanges, en septembre, est visible ici"),
-    aes(
-      x = x,
-      y = y,
-      label = str_wrap(label, 15)
-    ),
-    label.size = NA
-  ) +
   geom_curve(
     data = tibble(
       x = 5,
@@ -119,6 +108,16 @@ seq_empl_jour %>%
     size = 0.5,
     curvature = -0.1,
     arrow = arrow(length = unit(0.01, "npc"), type = "open")
+  ) +
+  geom_label(
+    data = tibble(x = 4.5, y = 0.4, label = "La période des vendanges, en septembre, est bien visible"),
+    aes(
+      x = x,
+      y = y,
+      label = str_wrap(label, 15)
+    ),
+    label.size = NA,
+    size = 5
   ) +
   scale_x_continuous(
     "",
@@ -143,19 +142,24 @@ seq_empl_jour %>%
                      limits = c(0, 0.6)) +
   scale_fill_manual("Type de poste",
                     values = c("#b22222", "#22427c")) +
-  labs(caption = "Source : Insee - DADS \nPart des emplois par date, moyenne décennale 2006-2015") +
+  labs(caption = "Source : Insee - DADS \nPart des emplois par date, moyenne décennale 2006-2015 \nTraitements T.Vroylandt") +
   theme_minimal(base_line_size = 1) +
   theme(
+    text = element_text(family = "ubuntu"),
     axis.text.x = element_text(
-      size = 11,
-      vjust = 1,
+      size = 13,
+      vjust = 0.8,
       angle = 60
     ),
-    axis.text.y = element_text(size = 11),
+    axis.text.y = element_text(size = 13),
+    axis.title.y = element_text(size = 13),
+    legend.text = element_text(size = 13),
+    legend.title = element_text(size = 13),
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank(),
     panel.grid.major.y = element_line(color = "grey80"),
-    plot.caption = element_text(hjust = 0)
+    plot.caption = element_text(hjust = 0, 
+                                size = 11)
   )
 
 ```
@@ -169,24 +173,6 @@ dads_postes %>%
   ggplot() +
   geom_boxplot(aes(x = annee, y = DATDEB / 30, group = annee),
                outlier.alpha = 0.03, fill = "#b22222") +
-  geom_label(
-    data = tibble(x = 2009, y = 3, label = "2007 et 2011 sont des années de vendanges précoces"),
-    aes(
-      x = x,
-      y = y,
-      label = str_wrap(label, 18)
-    ),
-    label.size = NA
-  ) +
-  geom_label(
-    data = tibble(x = 2014, y = 3.5, label = "En 2013, les vendanges sont tardives, en octobre"),
-    aes(
-      x = x,
-      y = y,
-      label = str_wrap(label, 18)
-    ),
-    label.size = NA
-  ) +
   geom_curve(
     data = tibble(
       x = c(2008.7, 2009.2),
@@ -221,6 +207,26 @@ dads_postes %>%
     curvature = 0.1,
     arrow = arrow(length = unit(0.01, "npc"), type = "open")
   ) +
+  geom_label(
+    data = tibble(x = 2009, y = 3, label = "2007 et 2011 sont des années de vendanges précoces"),
+    aes(
+      x = x,
+      y = y,
+      label = str_wrap(label, 18)
+    ),
+    label.size = NA,
+    size = 5
+  ) +
+  geom_label(
+    data = tibble(x = 2014, y = 3.5, label = "En 2013, les vendanges sont tardives, en octobre"),
+    aes(
+      x = x,
+      y = y,
+      label = str_wrap(label, 18)
+    ),
+    label.size = NA,
+    size = 5
+  ) +
   scale_x_continuous("", breaks = seq(2006, 2015, 1)) +
   scale_y_continuous(
     "",
@@ -241,27 +247,30 @@ dads_postes %>%
     )
   ) +
   coord_flip() +
-  labs(caption = "Source : Insee - DADS \nDate de début des postes annexes") +
+  labs(caption = "Source : Insee - DADS \nDate de début des postes annexes \nTraitements T.Vroylandt") +
   theme_minimal(base_line_size = 1) +
   theme(
+    text = element_text(family = "ubuntu"),
     axis.text.x = element_text(
-      size = 11,
+      size = 13,
       vjust = 0.5,
       angle = 60
     ),
-    axis.text.y = element_text(size = 11),
+    axis.text.y = element_text(size = 13),
     panel.grid.minor = element_blank(),
     panel.grid.major.y = element_blank(),
     panel.grid.major.x = element_line(color = "grey80"),
-    plot.caption = element_text(hjust = 0)
+    plot.caption = element_text(hjust = 0, 
+                                size = 11)
   )
 ```
 
-## Analyse géographique
+## Caractéristiques géographiques
 
 Selon les départements, les récoltes et en particulier les vendanges, ne débutent pas à la même date.
+On voit bien que la majorité de l'emploi se concentre dans les départements qui font traditionnellement du vin, que ce soit dans le Sud-Ouest, autour de la Gironde, ou dans la Champagne ou la Bourgogne.
 
-Cas Champagne, Gironde, Alasace, Occitanie, etc...
+On remarque aussi que l'emploi a tendance a être plus dispersé dans le temps dans le Sud, notamment du fait des cultures fruitières. Il est par contre particulièrement concentré sur une courte période en Champagne.
 
 ```{r saisonnalite_geo, fig.align='center'}
 # Stats par dep
@@ -355,9 +364,13 @@ anim_carte <- ggplot() +
   ) +
   labs(title = "Date : {current_frame}") +
   theme_void() +
-  labs(caption = "Source : Insee - DADS \nDate de début des postes annexes \nDépartements avec plus de 30 observations avant pondération sur 10 ans \nNS : Non significatif") +
+  labs(caption = "Source : Insee - DADS \nDate de début des postes annexes \nDépartements avec plus de 30 observations avant pondération sur 10 ans \nNS : Non significatif \nTraitements T.Vroylandt") +
    theme(
-    plot.caption = element_text(hjust = 0)
+    text = element_text(family = "ubuntu"),
+    legend.text = element_text(size = 13),
+    legend.title = element_text(size = 13),
+    plot.caption = element_text(hjust = 0, 
+                                size = 11)
   ) +
   transition_manual(date, 
                     cumulative = TRUE)
@@ -366,12 +379,11 @@ anim_carte <- ggplot() +
 animate(anim_carte, fps = 1)
 ```
 
-## Analyse démographique
+## Profils des vendangeurs
 
-On a des profils différents selon qu'il s'agisse des postes annexes ou non annexes.
+Selon qu'il s'agisse de postes saisonniers (annexes) ou permanents (non annexes), les profils des salariés sont bien différents. Dans un cas, on a plutôt affaire à des jeunes, avec davantage de femmes, alors que dans l'autre la pyramide des âges est plus répartie.
 
 ```{r demographie_comparaison, fig.height=6, fig.width=12}
-
 dads_demo <- dads_postes %>%
   mutate(
     AGE_TR = cut(
@@ -439,16 +451,6 @@ ggplot() +
     position = "dodge",
     width = 2
   ) +
-  geom_label(
-    data = com_label,
-    aes(
-      x = x,
-      y = y,
-      label = str_wrap(label, 15)
-    ),
-    size = 3.5,
-    label.size = NA
-  ) +
   geom_curve(
     data = com_fleche,
     aes(
@@ -462,6 +464,16 @@ ggplot() +
     arrow = arrow(length = unit(0.02, "npc"), 
                   type = "open")
   ) +
+  geom_label(
+    data = com_label,
+    aes(
+      x = x,
+      y = y,
+      label = str_wrap(label, 15)
+    ),
+    size = 5,
+    label.size = NA
+  ) +
   scale_x_discrete("") +
   scale_y_continuous(
     name = "Part des emplois (en %)",
@@ -474,26 +486,32 @@ ggplot() +
                     values = c("Homme" = "#22427c", "Femme" = "#b22222")) +
   coord_flip() +
   facet_grid(cols = vars(filtre_poste)) +
-  labs(caption = "Source : Insee - DADS \nMoyenne 2006-2015 \nLa construction des données impose des classes d'âges quadriennales") +
+  labs(caption = "Source : Insee - DADS \nMoyenne 2006-2015 \nLa construction des données impose des classes d'âges quadriennales \nTraitements T.Vroylandt") +
   theme_minimal(base_line_size = 1) +
   theme(
+    text = element_text(family = "ubuntu"),
     axis.text.x = element_text(
-      size = 11,
+      size = 13,
       vjust = 1,
       angle = 60
     ),
-    axis.text.y = element_text(size = 11),
+    axis.title.x = element_text(size = 13),
+    axis.text.y = element_text(size = 13),
+    legend.text = element_text(size = 13),
+    legend.title = element_text(size = 13),
+    strip.text = element_text(size = 13),
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_line(color = "grey80"),
     panel.grid.major.y = element_blank(),
-    plot.caption = element_text(hjust = 0)
+    plot.caption = element_text(hjust = 0,
+                                size = 11)
   )
 ```
 
 > ## Méthodologie
 >
 > La déclaration annuelle de données sociales (DADS) est une formalité administrative obligatoire pour toute entreprise employant des salariés. Elle contient des informations relatives à l'établissement et au salarié.
-> Ces données sont recueillies par l'Insee qui constitue des fichiers d'analyse. Le fichier utilisé ici est le fichier "postes" où chaque enregistrement correspond à un poste, c'est-à-dire à la consolidation des périodes de travail d'un salarié dans un même établissement.
+> Ces données sont recueillies par l'Insee qui constitue des fichiers d'analyse (https://www.insee.fr/fr/statistiques/3536754). Le fichier utilisé ici est le fichier "postes" où chaque enregistrement correspond à un poste, c'est-à-dire à la consolidation des périodes de travail d'un salarié dans un même établissement.
 >
 > Un poste est catégorisé en fonction de plusieurs critères pour analyser si il relève d'un "vrai" emploi ou d'un poste non annexe, par exemple saisonnier ou de très courte durée. Un poste est dit non-annexe si :
 >
