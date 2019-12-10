@@ -1,0 +1,14 @@
+---
+title: 'Les vendanges : quels emplois ?'
+author: ''
+date: '2019-12-10'
+slug: vendanges
+categories: []
+tags:
+  - R
+  - emploi
+  - territoires
+---
+
+```{r child_doc, child = "analyse_vendanges.Rmmd"}
+```

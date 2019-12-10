@@ -7,7 +7,7 @@ body {
 }
 
 a, a:hover {
-    color: #a00;
+    color: #b22222;
     text-decoration: none;
     word-break: break-word;
 }
@@ -66,7 +66,7 @@ blockquote {
     font-size: 1.4rem;
     font-family: Georgia,bitstream charter,serif;
     border-left: 3px solid;
-    border-color: #a00;
+    border-color: #b22222;
     padding-left: 20px;
 }
 
@@ -80,7 +80,7 @@ blockquote em {
 }
 
 a,a:hover {
-    color: #a00;
+    color: #b22222;
     text-decoration: none
 }
 
@@ -219,7 +219,7 @@ ul {
 
 .header nav {
     margin-top: 20px;
-    border-top: 12px solid #a00;
+    border-top: 12px solid #b22222;
 }
 
 .header nav ul,
@@ -296,7 +296,7 @@ ul {
 }
 
 .post .draft-label {
-    color: #a00;
+    color: #b22222;
     text-decoration: none;
     padding: 2px 4px;
     border-radius: 4px;
@@ -311,10 +311,10 @@ ul {
 
 .post-tags .tags a {
     display: inline-block;
-    border: 1px solid #a00;
+    border: 1px solid #b22222;
     border-radius: 4px;
     padding: 0px 6px;
-    color: #a00;
+    color: #b22222;
     line-height: 20px;
     font-size: 12px;
     text-decoration: none;
@@ -330,9 +330,9 @@ ul {
     text-align: right;
     font-size: 0.75em;
     color: #999;
-    border-top: 1px solid #f4f4f4;
+    margin-top: 20px;
+    border-top: 12px solid #b22222;
     padding: 20px 0;
-    margin-top: 40px;
 }
 
 .page-title {

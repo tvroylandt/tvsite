@@ -1,0 +1,511 @@
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+library(tidyverse)
+library(here)
+library(gganimate)
+library(CARTElette)
+library(sf)
+
+# Shp dep
+shp_dep <- loadMap(COG = 2015, nivsupra = "DEP") %>%
+  filter(!DEP %in% c("971", "972", "973", "974", "976")) %>%
+  st_simplify(dTolerance = 1500, preserveTopology = FALSE)
+```
+
+```{r import_clean}
+# Import - filtre à intégrer en amont
+dads_postes <- read_rds("data/dads_filtre_05_15.rds") %>% 
+  filter(annee != 2005) %>% 
+  mutate(filtre_poste = fct_recode(FILT,
+                           "Annexe" = "2",
+                           "Non annexe" = "1"),
+         filtre_poste = fct_relevel(filtre_poste,
+                            "Annexe", "Non annexe"))
+
+# Construction des périodes d'emplois
+seq_empl <- dads_postes %>% 
+  group_by(annee, DATDEB, DATFIN, filtre_poste) %>% 
+  count() %>% 
+  mutate(n = n * 12)
+
+seq_empl_jour <- tibble(jour = seq(-30, 360, 1)) %>% 
+  mutate(join = "1") %>% 
+  full_join((seq_empl %>% 
+               mutate(join = "1")),
+            by = "join") %>% 
+  mutate(ind_ok = case_when(jour >= DATDEB & jour <= DATFIN ~ "1",
+                            TRUE ~ "0")) %>% 
+  filter(ind_ok == "1") %>% 
+  group_by(annee, jour, filtre_poste) %>% 
+  summarise(n = sum(n))  %>% 
+  filter(jour > 0)
+```
+
+```{r moyenne_10ans}
+# Moyennes sur 10 ans
+moy_empl <- dads_postes %>% 
+  group_by(filtre_poste) %>% 
+  count() %>% 
+  ungroup() %>% 
+  mutate(part_empl = n / sum(n) * 100)
+
+moy_jour <- seq_empl_jour %>% 
+  group_by(filtre_poste) %>% 
+  summarise(n = sum(n)) %>% 
+  ungroup() %>% 
+  mutate(part_jour = n / sum(n) * 100)
+
+moy_10ans <- moy_empl %>% 
+  left_join(moy_jour, by = ("filtre_poste")) %>% 
+  mutate_at(vars(part_empl, part_jour), format, 
+            decimal.mark = ",", digits = 0, nsmall = 0) %>% 
+  select(filtre_poste, part_empl, part_jour)
+```
+
+Tisser un peu le récit (référence littéraire ? style journalistique ?)
+
+Intro sur qui compose la PCS au niveau métier, combien d'emploi (postes) cela représente + renvoi à la note méthodologique de fin.
+
+691D : Ouvriers de la viticulture ou de l'arboriculture fruitière
+
+## Emplois permanents et saisonniers
+
+Au sein de la profession des ouvriers viticoles et arboriculteurs, deux modalités d'emploi se dessinent :
+
++ d'un côté des emplois permanents (ou poste non-annexe), à l'année ou sur des périodes longues. En moyenne, sur 10 ans, ils représentent `r filter(moy_10ans, filtre_poste == "Non annexe")$part_empl` % des emplois et `r filter(moy_10ans, filtre_poste == "Non annexe")$part_jour` % des jours travaillés ;
++ de l'autre côté des emplois saisonniers (ou poste annexe), sur de courtes périodes, pour les récoltes. De façon, inverse, ils représentent la majorité des emplois, `r filter(moy_10ans, filtre_poste == "Annexe")$part_empl` %, mais seulement `r filter(moy_10ans, filtre_poste == "Annexe")$part_jour` % des jours travaillés.
+
+## Analyse de la saisonnalité
+
+De façon assez logique, ces emplois ne se répartissent pas de la même façon au cours de l'année. Les emplois permanents sont de faits relativement stables selon les périodes, bien qu'on observe un pic au moment des récoltes. Les emplois saisonniers se multiplient au moment des périodes de récolte et notamment pendant les vendanges.
+
+```{r saisonnalite_poste, fig.height=7, fig.width=12}
+# Saisonnalité en fonction du type de poste, en moyenne décennale
+seq_empl_jour %>%
+  group_by(jour, filtre_poste) %>%
+  summarise(n = sum(n)) %>%
+  ungroup() %>%
+  mutate(part_n = n / sum(n)) %>%
+  ggplot() +
+  geom_area(aes(x = jour / 30, y = part_n * 100, fill = filtre_poste),
+            stat = "identity", color = "grey40", size = 1.1) +
+  geom_label(
+    data = tibble(x = 4.5, y = 0.4, label = "La période des vendanges, en septembre, est visible ici"),
+    aes(
+      x = x,
+      y = y,
+      label = str_wrap(label, 15)
+    ),
+    label.size = NA
+  ) +
+  geom_curve(
+    data = tibble(
+      x = 5,
+      xend = 8.45,
+      y = 0.45,
+      yend = 0.53
+    ),
+    aes(
+      x = x,
+      y = y,
+      xend = xend,
+      yend = yend
+    ),
+    size = 0.5,
+    curvature = -0.1,
+    arrow = arrow(length = unit(0.01, "npc"), type = "open")
+  ) +
+  scale_x_continuous(
+    "",
+    breaks = seq(0, 11, 1),
+    labels = c(
+      "Janvier",
+      "Février",
+      "Mars",
+      "Avril",
+      "Mai",
+      "Juin",
+      "Juillet",
+      "Août",
+      "Septembre",
+      "Octobre",
+      "Novembre",
+      "Décembre"
+    )
+  ) +
+  scale_y_continuous("Part de l'emploi (en %)",
+                     breaks = seq(0, 0.7, 0.1),
+                     limits = c(0, 0.6)) +
+  scale_fill_manual("Type de poste",
+                    values = c("#b22222", "#22427c")) +
+  labs(caption = "Source : Insee - DADS \nPart des emplois par date, moyenne décennale 2006-2015") +
+  theme_minimal(base_line_size = 1) +
+  theme(
+    axis.text.x = element_text(
+      size = 11,
+      vjust = 1,
+      angle = 60
+    ),
+    axis.text.y = element_text(size = 11),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(color = "grey80"),
+    plot.caption = element_text(hjust = 0)
+  )
+
+```
+
+Pour les postes annexes, la saisonnalité est fortement marquée. On peut toutefois observer des différences selon les années, avec des récoltes plus ou moins tardives, fonction notamment des conditions météorologiques à l'hiver, au printemps et durant tout l'été. Ces phénomènes se répercutent alors sur l'emploi.
+
+```{r saisonnalite_annee, fig.height=6, fig.width=12}
+# Saisonnalité par année sur les dates de début
+dads_postes %>%
+  filter(filtre_poste == "Annexe" & DATDEB > 0) %>%
+  ggplot() +
+  geom_boxplot(aes(x = annee, y = DATDEB / 30, group = annee),
+               outlier.alpha = 0.03, fill = "#b22222") +
+  geom_label(
+    data = tibble(x = 2009, y = 3, label = "2007 et 2011 sont des années de vendanges précoces"),
+    aes(
+      x = x,
+      y = y,
+      label = str_wrap(label, 18)
+    ),
+    label.size = NA
+  ) +
+  geom_label(
+    data = tibble(x = 2014, y = 3.5, label = "En 2013, les vendanges sont tardives, en octobre"),
+    aes(
+      x = x,
+      y = y,
+      label = str_wrap(label, 18)
+    ),
+    label.size = NA
+  ) +
+  geom_curve(
+    data = tibble(
+      x = c(2008.7, 2009.2),
+      y = c(4.3, 4.3),
+      xend = c(2007, 2011),
+      yend = c(7.8, 7.6)
+    ),
+    aes(
+      x = x,
+      y = y,
+      xend = xend,
+      yend = yend
+    ),
+    size = 0.5,
+    curvature = -0.1,
+    arrow = arrow(length = unit(0.01, "npc"), type = "open")
+  ) +
+  geom_curve(
+    data = tibble(
+      x = 2014,
+      y = 4.6,
+      xend = 2013.1,
+      yend = 8.9
+    ),
+    aes(
+      x = x,
+      y = y,
+      xend = xend,
+      yend = yend
+    ),
+    size = 0.5,
+    curvature = 0.1,
+    arrow = arrow(length = unit(0.01, "npc"), type = "open")
+  ) +
+  scale_x_continuous("", breaks = seq(2006, 2015, 1)) +
+  scale_y_continuous(
+    "",
+    breaks = seq(0, 11, 1),
+    labels = c(
+      "Janvier",
+      "Février",
+      "Mars",
+      "Avril",
+      "Mai",
+      "Juin",
+      "Juillet",
+      "Août",
+      "Septembre",
+      "Octobre",
+      "Novembre",
+      "Décembre"
+    )
+  ) +
+  coord_flip() +
+  labs(caption = "Source : Insee - DADS \nDate de début des postes annexes") +
+  theme_minimal(base_line_size = 1) +
+  theme(
+    axis.text.x = element_text(
+      size = 11,
+      vjust = 0.5,
+      angle = 60
+    ),
+    axis.text.y = element_text(size = 11),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.major.x = element_line(color = "grey80"),
+    plot.caption = element_text(hjust = 0)
+  )
+```
+
+## Analyse géographique
+
+Selon les départements, les récoltes et en particulier les vendanges, ne débutent pas à la même date.
+
+Cas Champagne, Gironde, Alasace, Occitanie, etc...
+
+```{r saisonnalite_geo, fig.align='center'}
+# Stats par dep
+stats_dep <- dads_postes %>%
+  filter(filtre_poste == "Annexe") %>%
+  group_by(DEPT) %>%
+  summarise(
+    date_deb_med = median(DATDEB),
+    date_deb_d1 = quantile(DATDEB, probs = seq(0, 1, 0.1))[2],
+    date_deb_d2 = quantile(DATDEB, probs = seq(0, 1, 0.1))[3],
+    date_deb_d3 = quantile(DATDEB, probs = seq(0, 1, 0.1))[4],
+    date_deb_d4 = quantile(DATDEB, probs = seq(0, 1, 0.1))[5],
+    date_deb_d5 = quantile(DATDEB, probs = seq(0, 1, 0.1))[6],
+    date_deb_d6 = quantile(DATDEB, probs = seq(0, 1, 0.1))[7],
+    date_deb_d7 = quantile(DATDEB, probs = seq(0, 1, 0.1))[8],
+    date_deb_d8 = quantile(DATDEB, probs = seq(0, 1, 0.1))[9],
+    date_deb_d9 = quantile(DATDEB, probs = seq(0, 1, 0.1))[10],
+    n = n()
+  )
+
+# Avec sélection des départements
+# Et on anime les transitions par décile
+decile_dep <- stats_dep %>%
+  pivot_longer(
+    cols = starts_with("date_deb_d"),
+    names_to = "decile",
+    values_to = "val_decile"
+  ) %>%
+  filter(n > 30) %>%
+  select(DEPT, decile, val_decile) %>%
+  mutate(
+    decile = str_sub(decile, -2, -1),
+    val_decile = round(val_decile, 0),
+    val_decile = if_else(val_decile < 1, 1, val_decile),
+    mois_trunc = trunc(val_decile / 30),
+    jour = round((val_decile / 30 - mois_trunc) * 30, 0) + 1,
+    mois = fct_recode(
+      as.character(mois_trunc + 1),
+      "janvier" = "1",
+      "février" = "2",
+      "mars" = "3",
+      "avril" = "4",
+      "mai" = "5",
+      "juin" = "6",
+      "juillet" = "7",
+      "août" = "8",
+      "septembre" = "9",
+      "octobre" = "10",
+      "novembre" = "11",
+      "décembre" = "12"
+    ),
+    date = paste(jour, mois, sep = " ")
+  ) %>%
+  select(DEPT, decile, val_decile, date)
+
+# Jointure
+decile_dep_shp <- shp_dep %>%
+  left_join(decile_dep %>%
+              bind_rows(tibble(DEPT = unique(decile_dep$DEPT))), by = c("DEP" = "DEPT")) %>%
+  mutate(decile = fct_explicit_na(decile, "NS"),
+         decile = fct_recode(decile,
+                             "10 %" = "d1",
+                             "20 %" = "d2",
+                             "30 %" = "d3",
+                             "40 %" = "d4",
+                             "50 %" = "d5",
+                             "60 %" = "d6",
+                             "70 %" = "d7",
+                             "80 %" = "d8",
+                             "90 %" = "d9"),
+         date = if_else(is.na(date), "1 janvier", date),
+         val_decile = if_else(is.na(val_decile), 1, val_decile),
+         date = fct_reorder(date, val_decile))
+
+# Carte GIF
+anim_carte <- ggplot() +
+  geom_sf(data = decile_dep_shp, aes(fill = decile)) +
+  scale_fill_manual("Part des emplois \nayant débuté",
+    values = c(
+      "#f0b0b0",
+      "#e37070",
+      "#db4545",
+      "#d73030",
+      "#b22222",
+      "#9d1e1e",
+      "#871a1a",
+      "#721616",
+      "#5d1212",
+      "grey80"
+    )
+  ) +
+  labs(title = "Date : {current_frame}") +
+  theme_void() +
+  labs(caption = "Source : Insee - DADS \nDate de début des postes annexes \nDépartements avec plus de 30 observations avant pondération sur 10 ans \nNS : Non significatif") +
+   theme(
+    plot.caption = element_text(hjust = 0)
+  ) +
+  transition_manual(date, 
+                    cumulative = TRUE)
+
+# Animation
+animate(anim_carte, fps = 1)
+```
+
+## Analyse démographique
+
+On a des profils différents selon qu'il s'agisse des postes annexes ou non annexes.
+
+```{r demographie_comparaison, fig.height=6, fig.width=12}
+
+dads_demo <- dads_postes %>%
+  mutate(
+    AGE_TR = cut(
+      AGE,
+      breaks = c(0, 19, 23, 27, 31, 35, 39,
+                 43, 47, 51, 55, 59, 63, 67, 150),
+      include.lowest = TRUE,
+      right = FALSE,
+      labels = c(
+        "Moins de 19 ans",
+        "19-23 ans",
+        "23-27 ans",
+        "27-31 ans",
+        "31-35 ans",
+        "35-39 ans",
+        "39-43 ans",
+        "43-47 ans",
+        "47-51 ans",
+        "51-55 ans",
+        "55-59 ans",
+        "59-63 ans",
+        "63-67 ans",
+        "67 ans et plus"
+      )
+    ),
+    SEXE = fct_recode(SEXE,
+                      "Homme" = "1",
+                      "Femme" = "2")
+  )
+
+# Comparaison annexe / non-annexe
+dads_demo_comparaison <- dads_demo %>%
+  group_by(SEXE, AGE_TR, filtre_poste) %>%
+  count() %>%
+  mutate(n = n * 12) %>%
+  group_by(filtre_poste) %>%
+  mutate(part_n = n / sum(n) * 100) %>%
+  filter(AGE_TR != "00" & !is.na(AGE_TR)) %>%
+  ungroup()
+
+# Commentaire
+com_label <- tibble(x = c("55-59 ans", "59-63 ans"),
+                    y = c(8.5, 10),
+                    label = c("Les postes saisonniers sont plutôt occupés par des jeunes",
+                    "Les tranches d'âges sont davantages réparties dans les postes permanents"),
+                    filtre_poste = c("Annexe", "Non annexe"))
+
+com_fleche <- tibble(x = "47-51 ans",
+                     xend = "19-23 ans",
+                     y = c(6, 8.5),
+                     yend =c(-6, 10),
+                     filtre_poste = "Annexe")
+
+# Fusion
+ggplot() +
+  geom_bar(data = filter(dads_demo_comparaison, SEXE == "Homme") ,
+    aes(x = AGE_TR, fill = SEXE, y = part_n),
+    stat = "identity",
+    position = "dodge",
+    width = 2
+  ) +
+  geom_bar(data = filter(dads_demo_comparaison, SEXE == "Femme") ,
+    aes(x = AGE_TR, fill = SEXE, y = -part_n),
+    stat = "identity",
+    position = "dodge",
+    width = 2
+  ) +
+  geom_label(
+    data = com_label,
+    aes(
+      x = x,
+      y = y,
+      label = str_wrap(label, 15)
+    ),
+    size = 3.5,
+    label.size = NA
+  ) +
+  geom_curve(
+    data = com_fleche,
+    aes(
+      x = x,
+      y = y,
+      xend = xend,
+      yend = yend
+    ),
+    size = 0.5,
+    curvature = -0.1,
+    arrow = arrow(length = unit(0.02, "npc"), 
+                  type = "open")
+  ) +
+  scale_x_discrete("") +
+  scale_y_continuous(
+    name = "Part des emplois (en %)",
+    breaks = seq(-12, 14, 2),
+    labels = paste0(as.character(c(
+      seq(12, 0,-2), seq(2, 14, 2)
+    )))
+  ) +
+  scale_fill_manual("Sexe",
+                    values = c("Homme" = "#22427c", "Femme" = "#b22222")) +
+  coord_flip() +
+  facet_grid(cols = vars(filtre_poste)) +
+  labs(caption = "Source : Insee - DADS \nMoyenne 2006-2015 \nLa construction des données impose des classes d'âges quadriennales") +
+  theme_minimal(base_line_size = 1) +
+  theme(
+    axis.text.x = element_text(
+      size = 11,
+      vjust = 1,
+      angle = 60
+    ),
+    axis.text.y = element_text(size = 11),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_line(color = "grey80"),
+    panel.grid.major.y = element_blank(),
+    plot.caption = element_text(hjust = 0)
+  )
+```
+
+> ## Méthodologie
+>
+> La déclaration annuelle de données sociales (DADS) est une formalité administrative obligatoire pour toute entreprise employant des salariés. Elle contient des informations relatives à l'établissement et au salarié.
+> Ces données sont recueillies par l'Insee qui constitue des fichiers d'analyse. Le fichier utilisé ici est le fichier "postes" où chaque enregistrement correspond à un poste, c'est-à-dire à la consolidation des périodes de travail d'un salarié dans un même établissement.
+>
+> Un poste est catégorisé en fonction de plusieurs critères pour analyser si il relève d'un "vrai" emploi ou d'un poste non annexe, par exemple saisonnier ou de très courte durée. Un poste est dit non-annexe si :
+>
+> + la rémunération nette est supérieure à 3 SMIC mensuels ;
+> + ou le nombre d'heures salariées est supérieur à 120 et la durée de travail supérieure à 30 jours.
+>
+> Dans les autres cas, le poste est considéré comme annexe.
+>
+> ## Code et analyse
+>
+> L'ensemble de l'analyse et du code est disponible sur [github](https://github.com/tvroylandt/vendanges).
+>
+> Les remarques, commentaires et propositions sont les bienvenus : tvroylandt@gmail.com
+>
+

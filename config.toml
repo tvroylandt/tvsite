@@ -13,6 +13,8 @@ pygmentscodefencesguesssyntax = true
 googleAnalytics = "UA-123-45"
 disqusShortname = "ezhil-demo"
 
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+
 [params]
 	subtitle = "Un peu d'analyses et de données"
 	disableDisqusTypes = ["page"]
