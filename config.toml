@@ -17,7 +17,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 [params]
 	subtitle = "Un peu d'analyses et de données"
-	disableDisqusTypes = ["page"]
+	disableDisqusTypes = ["page", "post"]
 	featherIconsCDN = true
 	mode = "auto" # "dark", "auto", "light"
 	# customCSS = "css/custom.css"  # Custom CSS applied to default styles.

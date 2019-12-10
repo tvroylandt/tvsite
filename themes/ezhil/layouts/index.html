@@ -19,8 +19,8 @@
 					<span class="description">
 						{{ if isset .Params "description" }}
 						{{ .Description }}
-						{{ else if gt (len .RawContent) 120 }}
-						{{ slicestr .RawContent 0 120 }}...
+						{{ else if gt (len .RawContent) 170 }}
+						{{ slicestr .RawContent 0 170 }}...
 						{{ else }}
 						{{ .RawContent }}
 						{{ end }}

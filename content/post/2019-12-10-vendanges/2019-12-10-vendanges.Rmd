@@ -4,10 +4,12 @@ author: ''
 date: '2019-12-10'
 slug: vendanges
 categories: []
+description: "Une description"
 tags:
   - R
   - emploi
   - territoires
+type: "post"
 ---
 
 ```{r child_doc, child = "analyse_vendanges.Rmmd"}
