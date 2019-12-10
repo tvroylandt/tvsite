@@ -15,9 +15,7 @@ download.file("https://raw.githubusercontent.com/tvroylandt/vendanges/master/ana
 download.file("https://raw.githubusercontent.com/tvroylandt/vendanges/master/data/dads_filtre_05_15.rds", 
               here("static/post/data/dads_filtre_05_15.rds"))
 
-# Liens symboliques -------------------------------------------------------
-file.symlink(here("static/post/analyse_vendanges.Rmmd"), 
-             here("content/post/2019-12-10-vendanges/"))
 
-file.symlink(here("static/post/data/dads_filtre_05_15.rds"), 
-             here("content/post/2019-12-10-vendanges/data/"))
+# Liens symboliques à faire ensuite de façon relative en ligne de commande
+# Aller dans le bon dossier
+# faire ln -rs chemin_vers_le_fichier nom_du_lien
