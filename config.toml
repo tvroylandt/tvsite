@@ -10,8 +10,8 @@ pygmentsstyle = "solarized-dark"
 pygmentscodefences = true
 pygmentscodefencesguesssyntax = true
 
-googleAnalytics = "UA-123-45"
-disqusShortname = "ezhil-demo"
+googleAnalytics = "UA-154610501-1"
+#disqusShortname = "ezhil-demo"
 
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
