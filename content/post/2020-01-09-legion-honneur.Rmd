@@ -1,0 +1,29 @@
+---
+title: "Obtenir la Légion d'honneur en 10 étapes"
+author: ''
+date: '2020-01-09'
+slug: legion-honneur
+categories: []
+description: "La Légion d'honneur est la plus haute décoration française. Comment faire pour l'obtenir ? Sur quels tableaux miser ? Dans quoi faut-il vous investir ? On répond ici à toutes vos questions à partir d'une analyse statistique."
+tags:
+  - R
+---
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+library(here)
+
+# Copie de Github
+download.file("https://raw.githubusercontent.com/tvroylandt/legion_honneur/master/analyse_legion.Rmd", 
+              here("static/post/analyse_legion.Rmmd"))
+
+download.file("https://raw.githubusercontent.com/tvroylandt/legion_honneur/master/data/df_legion_clean.rds", 
+              here("static/post/data/df_legion_clean.rds"))
+
+# Liens symboliques à faire ensuite de façon relative en ligne de commande
+# Aller dans le bon dossier
+# faire ln -rs chemin_vers_le_fichier nom_du_lien
+```
+
+```{r child_doc, child = "analyse_legion.Rmmd"}
+```
