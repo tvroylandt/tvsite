@@ -1,4 +1,4 @@
-baseURL = "https://tvroylandt.netlify.com/"
+baseURL = "https://tvroylandt.netlify.app/"
 languageCode = "fr-fr"
 title = "Thomas Vroylandt"
 theme = "ezhil"
@@ -11,32 +11,26 @@ pygmentscodefences = true
 pygmentscodefencesguesssyntax = true
 
 googleAnalytics = "UA-154610501-1"
-#disqusShortname = "ezhil-demo"
 
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 [params]
-	subtitle = "Un peu d'analyses et de données"
+	subtitle = ""
 	disableDisqusTypes = ["page", "post"]
 	featherIconsCDN = true
-	mode = "auto" # "dark", "auto", "light"
+	mode = "light" # "dark", "auto", "light"
 	# customCSS = "css/custom.css"  # Custom CSS applied to default styles.
 	# customJS = ["js/custom.js", "js/custom1.js"]  # Custom JS scripts.
 
 [[menu.main]]
-name = "Menu"
-url = "/"
-weight = 1
-
-[[menu.main]]
 name = "Biographie"
 url = "/biographie"
-weight = 2
+weight = 1
 
 [[menu.main]]
 name = "Publications"
 url = "/publi"
-weight = 3
+weight = 2
 
 [[params.social]]
 name = "Twitter"
