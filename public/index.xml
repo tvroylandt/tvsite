@@ -6,30 +6,18 @@
     <description>Recent content on Thomas Vroylandt</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>fr-fr</language>
-    <lastBuildDate>Mon, 09 Dec 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Publications et présentations</title>
-      <link>/publi/</link>
-      <pubDate>Mon, 09 Dec 2019 00:00:00 +0000</pubDate>
+      <link>/publications/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/publi/</guid>
-      <description>Notes d’analyses Sur les compétences  “Quelles compétences pour quels territoires ?”, Éclairages et Synthèses, à paraître en 2020 (co-écrit avec Frédéric Lainé)   Sur les offres d’emploi et les besoins en main d’œuvre  “Les offres déposées à Pôle emploi depuis 20 ans. Reflet des évolutions du marché du travail”, Éclairages et Synthèses, à paraître en 2020
- “Enquête”Besoins en main-d’œuvre“, les employeurs anticipent une forte progression de leurs perspectives d’embauche pour 2019”, Éclairages et Synthèses, n°52, 2019 (co-écrit avec Patrick Duchen, Sandré Gaumont et Frédéric Lainé) - https://statistiques.</description>
-    </item>
-    
-    <item>
-      <title>A propos de moi</title>
-      <link>/biographie/</link>
-      <pubDate>Sun, 08 Dec 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/biographie/</guid>
-      <description>Je m’appelle Thomas Vroylandt.
-Après une prépa BL à Dijon et un master en sciences sociales à l’EHESS, l’ENS et l’ENSAE, j’ai eu l’occasion de développer mes compétences quantitatives dans mes emplois successifs.
-J’ai d’abord pu travailler au sein de la Drees, direction statistique du ministère des Affaires sociales. J’y étais en charge d’une enquête sur la formation des travailleurs sociaux ainsi que d’analyses sur le champ de l’emploi et de la formation dans le secteur de l’action sociale et médico-sociale.</description>
+      <guid>/publications/</guid>
+      <description>Notes d&amp;rsquo;analyses Sur les compétences  &amp;ldquo;Quelles compétences pour quels territoires ?&amp;quot;, Éclairages et Synthèses, à paraître	en 2020	(co-écrit avec Frédéric Lainé)  Sur les offres d&amp;rsquo;emploi et les besoins en main d&amp;rsquo;œuvre   &amp;ldquo;Les offres déposées à Pôle emploi depuis 20 ans. Reflet des évolutions du marché du travail&amp;rdquo;,	Éclairages et Synthèses, à paraître	en 2020
+  &amp;ldquo;Enquête &amp;ldquo;Besoins en main-d&amp;rsquo;œuvre&amp;rdquo;, les employeurs anticipent une forte progression de leurs perspectives d&amp;rsquo;embauche pour 2019&amp;rdquo;, Éclairages et Synthèses, n°52, 2019	(co-écrit avec Patrick Duchen, Sandré Gaumont et Frédéric Lainé) - https://statistiques.</description>
     </item>
     
   </channel>
