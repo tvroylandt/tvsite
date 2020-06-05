@@ -11,7 +11,7 @@ I graduated from a [master degree in Sociology and Statistics](http://master-sci
 
 My [CV](pdf/cv_vroylandt.pdf) (in French) and [Linkedin](https://fr.linkedin.com/in/thomas-vroylandt-9a2334190) can tell you more details.
 
-I had the occasion to [publish](publi/) several things, such as paper articles, analysis or lectures notes.
+I had the occasion to [publish](publications/) several things, such as paper articles, analysis or lectures notes.
 
 I work mostly with R and you can find some of my code on [Github](https://github.com/tvroylandt) and some of my opinions (mostly about data science) on [Twitter](https://twitter.com/tvroylandt).
 
