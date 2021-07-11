@@ -5,7 +5,7 @@ type: "page"
 
 I'm **Thomas Vroylandt**, a data analyst. 
 
-I work as a freelance at [Tillac](https://www.tillac-data.com/) where I do R dashboard and analytics for my clients. I'm also a statistician at [Pôle emploi](http://www.pole-emploi.org/statistiques-analyses/), a French administration for employment. Previously I have worked at the [Ministery for Health and Social Affaires](https://drees.solidarites-sante.gouv.fr/etudes-et-statistiques/). 
+I work as a freelance at [Tillac](https://www.tillac-data.com/) where I do R dashboard and analytics for my clients. I'm also a statistician at [Unédic](https://www.unedic.org/). Previously I have worked at [Pôle emploi](http://www.pole-emploi.org/statistiques-analyses/) and at the [Ministery for Health and Social Affaires](https://drees.solidarites-sante.gouv.fr/etudes-et-statistiques/). 
 
 I graduated from a [master degree in Sociology and Statistics](http://master-sciences-sociales.ens.fr/qess-presentation/) at the Ecole Normale Supérieure (ENS).
 
